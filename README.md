@@ -2,6 +2,8 @@
 
 Ova is an Object VAlidator that is light, extensible, and schema-based. Useful for Express req.body/params/query, or MongoDB document before inserting into collection if you don't want to use Mongoose.
 
+> Note: Ova's MongoDB ObjectID-validation features require the `mongodb` package. However, to keep Ova lean, MongoDB is not included and you will need to seperately install it in your project to use the MongoDB features of Ova. 
+
 ---
 
 ## Installation
@@ -291,7 +293,17 @@ ova.remove('disallow');
 To run the test cases, `cd` into the ova directory then do:
 
 ```
+npm install --only=production
 npm test
+```
+
+## Test ObjectID Feature
+
+To run the test cases, `cd` into the ova directory then do:
+
+```
+npm install
+npm run test-objectid
 ```
 
 #### Author: [Harry Lee](mailto:harry@forlooper.com)

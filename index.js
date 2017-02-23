@@ -1,4 +1,10 @@
-var ObjectID = require('mongodb').ObjectID;
+var assert = require('assert');
+var ObjectID = null;
+
+try {
+	ObjectID = require('mongodb').ObjectID;
+}
+catch(err) {}
 
 module.exports = function(object, schema) {
 	return validate(object, schema);
@@ -126,6 +132,8 @@ var validateType = function(val, ruleVal) {
 				return errorMsg;
 			break;
 		case 'objectIdString':
+			assert(ObjectID != null);
+			
 			if (!ObjectID.isValid(val))
 				return errorMsg;
 			break;
