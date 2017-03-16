@@ -162,6 +162,13 @@ var validateArrayType = function(val, ruleVal) {
 	return null;
 };
 
+var validateEq = function(val, ruleVal) {
+	if (val == null)
+		return null;
+
+	return (val !== ruleVal ? 'Not equal' : null);
+};
+
 var validateMin = function(val, ruleVal) {
 	if (val == null)
 		return null;
@@ -231,6 +238,7 @@ var validators = {
 	null: validateNull,
 	type: validateType,
 	arrayType: validateArrayType,
+	eq: validateEq,
 	min: validateMin,
 	max: validateMax,
 	minLength: validateMinLength,

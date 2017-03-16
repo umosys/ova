@@ -817,6 +817,39 @@ describe('Null validation', function() {
 	});
 });
 
+describe('Equals validation', function() {
+	it('should detect value equals target', function (done) {
+		var movie = {
+			title: '300',
+			starRating: 5
+		};
+
+		var error = ova(movie,  {
+			title: { _rules: { type: 'string', eq: '300' } },
+			starRating: { _rules: { type: 'number', eq: 5 } }
+		});
+
+		should.not.exist(error);
+		done();
+	});
+	
+	it('should detect value does not equal target', function (done) {
+		var movie = {
+			title: '200',
+			starRating: 4
+		};
+
+		var error = ova(movie,  {
+			title: { _rules: { type: 'string', eq: '300' } },
+			starRating: { _rules: { type: 'number', eq: 5 } }
+		});
+
+		error.title.should.equal('Not equal');
+		error.starRating.should.equal('Not equal');
+		done();
+	});
+});
+
 describe('Min validation', function() {
 	it('should detect value equals minimum', function (done) {
 		var movie = {
