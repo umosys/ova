@@ -6,9 +6,15 @@ Ova is an Object VAlidator that is light, extensible, and schema-based. Useful f
 
 ---
 
-## What's New In 1.2.0
+## What's New In 1.3.0
 
-- Added 'eq' rule to check for string/number equality
+> Breaking change: Renamed 'arrayType' rule to 'elementType' to be consistent with new rules for array elements
+
+- Added 'elementNull' rule to check for array element null
+- Added 'elementMin' rule to check for array element number minimum value
+- Added 'elementMax' rule to check for array element number maximum value
+- Added 'elementMinLength' rule to check for array element string minimum length
+- Added 'elementMaxLength' rule to check for array element string minimum length
 
 ## Installation
 
@@ -35,7 +41,7 @@ var movieSchema = {
 	title: { _rules: { type: 'string' } },
 	crew: {
 		director: { _rules: { type: 'string' } },
-		writers: { _rules: { type: 'array', arrayType: 'string' } }
+		writers: { _rules: { type: 'array', elementType: 'string' } }
 	}
 };
 
@@ -152,20 +158,6 @@ var schema = {
 };
 ```
 
-### arrayType
-
-Data type: *string*
-
-Checks if an array's elements are of the specified type.
-
-See **type** for possible values.
-
-```
-var schema = {
-	writers: { _rules: { type: 'array', arrayType: 'string' } }
-};
-```
-
 ### eq
 
 Data type: *string, number*
@@ -214,7 +206,7 @@ Checks if array/string has a length equal to or greater than the specified numbe
 ```
 var schema = {
 	name: { _rules: { type: 'string', minLength: 1 } },
-	writers: { _rules: { type: 'array', arrayType: 'string', minLength: 1 } }
+	writers: { _rules: { type: 'array', elementType: 'string', minLength: 1 } }
 };
 ```
 
@@ -227,7 +219,85 @@ Checks if array/string has a length equal to or less than the specified number.
 ```
 var schema = {
 	name: { _rules: { type: 'string', maxLength: 100 } },
-	writers: { _rules: { type: 'array', arrayType: 'string', maxLength: 10 } }
+	writers: { _rules: { type: 'array', elementType: 'string', maxLength: 10 } }
+};
+```
+
+### elementType
+
+Data type: *string*
+
+Checks if an array's elements are of the specified type.
+
+See **type** for possible values.
+
+```
+var schema = {
+	writers: { _rules: { type: 'array', elementType: 'string' } }
+};
+```
+
+### elementNull
+
+Data type: *boolean*
+
+If `true`, property can be `null`. If `false`, property cannot be `null`.
+
+```
+var schema = {
+	seats: {
+		_rules: { type: 'array', elementType: 'boolean', elementNull: true }
+	}
+};
+```
+
+### elementMin
+
+Data type: *number*
+
+Checks if array element number is equal to or greater than the specified number.
+
+```
+var schema = {
+	ratings: { _rules: { type: 'array', elementType: 'number', elementMin: 1 } }
+};
+```
+
+### elementMax
+
+Data type: *number*
+
+Checks if array element number is equal to or less than the specified number.
+
+```
+var schema = {
+	ratings: { _rules: { type: 'array', elementType: 'number', elementMax: 5 } }
+};
+```
+
+### elementMinLength
+
+Data type: *number*
+
+Checks if array element string has a length equal to or greater than the specified number.
+
+```
+var schema = {
+	name: { _rules: { type: 'string', minLength: 1 } },
+	writers: { _rules: { type: 'array', elementType: 'string', elementMinLength: 1 } }
+};
+```
+
+### elementMaxLength
+
+Data type: *number*
+
+Checks if array element string has a length equal to or less than the specified number.
+
+```
+var schema = {
+	name: { _rules: { type: 'string', maxLength: 100 } },
+	writers: { _rules: { type: 'array', elementType: 'string', elementMaxLength: 10 } }
 };
 ```
 

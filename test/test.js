@@ -1,5 +1,136 @@
-var should = require('should'),
-	ova = require('../index.js');
+var should = require('should');
+var ova = require('../index.js');
+
+/*
+Schema test
+ - should throw an error if rule does not exist
+ - should throw an error for non-objects in schema
+ - should be able to traverse nested schemas
+ - should be able to an error in a nested schema
+Type validation
+ - should detect unsupported type
+ - should detect array
+ - should detect non-array
+ - should detect boolean
+ - should detect non-boolean
+ - should detect date
+ - should detect non-date
+ - should detect date string
+ - should detect non-date string
+ - should detect JSON string
+ - should detect non-JSON string
+ - should detect number (integer)
+ - should detect number (decimal)
+ - should detect number (negative)
+ - should detect non-number
+ - should detect number string (integer)
+ - should detect number string (decimal)
+ - should detect number string (negative)
+ - should detect non-number string
+ - should detect object
+ - should detect non-object
+ - should detect string
+ - should detect non-string
+Element type validation
+ - should detect empty array
+ - should detect boolean elements
+ - should detect non-boolean elements
+ - should detect date elements
+ - should detect non-date elements
+ - should detect date string elements
+ - should detect non-date string elements
+ - should detect JSON string elements
+ - should detect non-JSON string elements
+ - should detect number (integer) elements
+ - should detect number (decimal) elements
+ - should detect number (negative) elements
+ - should detect non-number elements
+ - should detect object elements
+ - should detect non-object elements
+ - should detect string elements
+ - should detect non-string elements
+Element null validation
+ - should detect element can be null and is null
+ - should detect element can be null and is not null
+ - should detect element cannot be null and is null
+ - should detect element cannot be null and is not null
+Element min validation
+ - should detect element equals minimum
+ - should detect element above minimum
+ - should detect element below minimum
+Element max validation
+ - should detect element equals maximum
+ - should detect element above maximum
+ - should detect element below maximum
+Element min length validation
+ - should detect element string length equals minimum length
+ - should detect element string length above minimum length
+ - should detect element string length below minimum length
+Element max length validation
+ - should detect element string length equals maximum length
+ - should detect element string length above maximum length
+ - should detect element string length below maximum length
+Required validation
+ - should not validate undefined property if required is absent
+ - should not validate undefined property if required is false
+ - should not validate defined property if required is false
+ - should validate undefined property if required is true
+ - should validate defined property if required is true
+Null validation
+ - should detect value can be null and is null
+ - should detect value cannot be null and is null
+ - should detect value can be null but can be undefined
+ - should detect value can be null but cannot be undefined
+ - should detect value can be null and is of correct type
+Equals validation
+ - should detect value equals target
+ - should detect value does not equal target
+Min validation
+ - should detect value equals minimum
+ - should detect value above minimum
+ - should detect value below minimum
+Max validation
+ - should detect value equals maximum
+ - should detect value above maximum
+ - should detect value below maximum
+Min length validation
+ - should detect string length equals minimum length
+ - should detect string length above minimum length
+ - should detect string length below minimum length
+ - should detect array length equals minimum length
+ - should detect array length above minimum length
+ - should detect array length below minimum length
+Max length validation
+ - should detect string length equals maximum length
+ - should detect string length above maximum length
+ - should detect string length below maximum length
+ - should detect array length equals maximum length
+ - should detect array length above maximum length
+ - should detect array length below maximum length
+enum validation
+ - should detect value is in enum
+ - should detect value is not in enum
+ - should detect array is equal to enum (same order)
+ - should detect array is equal to enum (different order)
+ - should detect array is subset of enum
+ - should detect array is superset of enum
+ - should detect array has nothing from enum
+Regex validation
+ - should detect matching regex
+ - should detect non-matching regex
+ - should detect matching regex for each string in array
+ - should detect non-matching regex for each string in array
+ - should not detect non-matching regex for each non-string in array if elementType was not specified
+ - should detect non-matching regex for each non-string in array if elementType was specified
+Extensibility
+ - should add custom validator
+ - should detect disallowed value
+ - should detect non-disallowed value
+ - should not add custom validator if rule is "required"
+ - should not add custom validator if rule is "null"
+ - should not add custom validator if fn is not a function
+ - should remove a validator
+*/
 
 describe('Schema test', function() {
 	it('should throw an error if rule does not exist', function (done) {
@@ -55,7 +186,7 @@ describe('Schema test', function() {
 			title: { _rules: { type: 'string' } },
 			crew: {
 				director: { _rules: { type: 'string' } },
-				writers: { _rules: { type: 'array', arrayType: 'string' } }
+				writers: { _rules: { type: 'array', elementType: 'string' } }
 			}
 		});
 
@@ -76,7 +207,7 @@ describe('Schema test', function() {
 			title: { _rules: { type: 'string' } },
 			crew: {
 				director: { _rules: { type: 'string' } },
-				writers: { _rules: { type: 'array', arrayType: 'string' } }
+				writers: { _rules: { type: 'array', elementType: 'string' } }
 			}
 		});
 
@@ -113,7 +244,7 @@ describe('Type validation', function() {
 
 		var error = ova(movie,  {
 			title: { _rules: { type: 'string' } },
-			cast: { _rules: { type: 'array', arrayType: 'string' } }
+			cast: { _rules: { type: 'array', elementType: 'string' } }
 		});
 
 		should.not.exist(error);
@@ -128,7 +259,7 @@ describe('Type validation', function() {
 
 		var error = ova(movie,  {
 			title: { _rules: { type: 'string' } },
-			cast: { _rules: { type: 'array', arrayType: 'string' } }
+			cast: { _rules: { type: 'array', elementType: 'string' } }
 		});
 
 		error.cast.should.equal('Invalid type');
@@ -415,14 +546,14 @@ describe('Type validation', function() {
 	});
 });
 
-describe('Array type validation', function() {
+describe('Element type validation', function() {
 	it('should detect empty array', function (done) {
 		var poll = {
 			votes: []
 		};
 
 		var error = ova(poll,  {
-			votes: { _rules: { type: 'array', arrayType: 'boolean' } }
+			votes: { _rules: { type: 'array', elementType: 'boolean' } }
 		});
 
 		should.not.exist(error);
@@ -435,7 +566,7 @@ describe('Array type validation', function() {
 		};
 
 		var error = ova(poll,  {
-			votes: { _rules: { type: 'array', arrayType: 'boolean' } }
+			votes: { _rules: { type: 'array', elementType: 'boolean' } }
 		});
 
 		should.not.exist(error);
@@ -448,7 +579,7 @@ describe('Array type validation', function() {
 		};
 
 		var error = ova(poll,  {
-			votes: { _rules: { type: 'array', arrayType: 'boolean' } }
+			votes: { _rules: { type: 'array', elementType: 'boolean' } }
 		});
 
 		error.votes.should.equal('Invalid element type');
@@ -461,7 +592,7 @@ describe('Array type validation', function() {
 		};
 
 		var error = ova(poll,  {
-			dates: { _rules: { type: 'array', arrayType: 'date' } }
+			dates: { _rules: { type: 'array', elementType: 'date' } }
 		});
 
 		should.not.exist(error);
@@ -474,7 +605,7 @@ describe('Array type validation', function() {
 		};
 
 		var error = ova(poll,  {
-			dates: { _rules: { type: 'array', arrayType: 'date' } }
+			dates: { _rules: { type: 'array', elementType: 'date' } }
 		});
 
 		error.dates.should.equal('Invalid element type');
@@ -487,7 +618,7 @@ describe('Array type validation', function() {
 		};
 
 		var error = ova(poll,  {
-			dates: { _rules: { type: 'array', arrayType: 'dateString' } }
+			dates: { _rules: { type: 'array', elementType: 'dateString' } }
 		});
 
 		should.not.exist(error);
@@ -500,7 +631,7 @@ describe('Array type validation', function() {
 		};
 
 		var error = ova(poll,  {
-			dates: { _rules: { type: 'array', arrayType: 'dateString' } }
+			dates: { _rules: { type: 'array', elementType: 'dateString' } }
 		});
 
 		error.dates.should.equal('Invalid element type');
@@ -513,7 +644,7 @@ describe('Array type validation', function() {
 		};
 
 		var error = ova(movie,  {
-			actors: { _rules: { type: 'array', arrayType: 'jsonString' } }
+			actors: { _rules: { type: 'array', elementType: 'jsonString' } }
 		});
 
 		should.not.exist(error);
@@ -526,7 +657,7 @@ describe('Array type validation', function() {
 		};
 
 		var error = ova(movie,  {
-			actors: { _rules: { type: 'array', arrayType: 'jsonString' } }
+			actors: { _rules: { type: 'array', elementType: 'jsonString' } }
 		});
 
 		error.actors.should.equal('Invalid element type');
@@ -539,7 +670,7 @@ describe('Array type validation', function() {
 		};
 
 		var error = ova(poll,  {
-			voterAges: { _rules: { type: 'array', arrayType: 'number' } }
+			voterAges: { _rules: { type: 'array', elementType: 'number' } }
 		});
 
 		should.not.exist(error);
@@ -552,7 +683,7 @@ describe('Array type validation', function() {
 		};
 
 		var error = ova(spring,  {
-			temperatures: { _rules: { type: 'array', arrayType: 'number' } }
+			temperatures: { _rules: { type: 'array', elementType: 'number' } }
 		});
 
 		should.not.exist(error);
@@ -565,7 +696,7 @@ describe('Array type validation', function() {
 		};
 
 		var error = ova(winter,  {
-			temperatures: { _rules: { type: 'array', arrayType: 'number' } }
+			temperatures: { _rules: { type: 'array', elementType: 'number' } }
 		});
 
 		should.not.exist(error);
@@ -578,7 +709,7 @@ describe('Array type validation', function() {
 		};
 
 		var error = ova(summer,  {
-			temperatures: { _rules: { type: 'array', arrayType: 'number' } }
+			temperatures: { _rules: { type: 'array', elementType: 'number' } }
 		});
 
 		error.temperatures.should.equal('Invalid element type');
@@ -591,7 +722,7 @@ describe('Array type validation', function() {
 		};
 
 		var error = ova(movie,  {
-			cast: { _rules: { type: 'array', arrayType: 'object' } }
+			cast: { _rules: { type: 'array', elementType: 'object' } }
 		});
 
 		should.not.exist(error);
@@ -604,7 +735,7 @@ describe('Array type validation', function() {
 		};
 
 		var error = ova(movie,  {
-			cast: { _rules: { type: 'array', arrayType: 'object' } }
+			cast: { _rules: { type: 'array', elementType: 'object' } }
 		});
 
 		error.cast.should.equal('Invalid element type');
@@ -617,7 +748,7 @@ describe('Array type validation', function() {
 		};
 
 		var error = ova(poll,  {
-			votes: { _rules: { type: 'array', arrayType: 'string' } }
+			votes: { _rules: { type: 'array', elementType: 'string' } }
 		});
 
 		should.not.exist(error);
@@ -630,10 +761,228 @@ describe('Array type validation', function() {
 		};
 
 		var error = ova(poll,  {
-			votes: { _rules: { type: 'array', arrayType: 'string' } }
+			votes: { _rules: { type: 'array', elementType: 'string' } }
 		});
 
 		error.votes.should.equal('Invalid element type');
+		done();
+	});
+});
+
+describe('Element null validation', function() {
+	it('should detect element can be null and is null', function (done) {
+		var computer = {
+			memorySlots: ['4GB', null, '4GB', '4GB']
+		};
+
+		var error = ova(computer,  {
+			memorySlots: { _rules: { type: 'array', elementType: 'string', elementNull: true } }
+		});
+
+		should.not.exist(error);
+		done();
+	});
+	
+	it('should detect element can be null and is not null', function (done) {
+		var computer = {
+			memorySlots: ['4GB', '4GB', '4GB', '4GB']
+		};
+
+		var error = ova(computer,  {
+			memorySlots: { _rules: { type: 'array', elementType: 'string', elementNull: true } }
+		});
+
+		should.not.exist(error);
+		done();
+	});
+	
+	it('should detect element cannot be null and is null', function (done) {
+		var computer = {
+			memorySlots: ['4GB', null, '4GB', '4GB']
+		};
+
+		var error = ova(computer,  {
+			memorySlots: { _rules: { type: 'array', elementType: 'string', elementNull: false } }
+		});
+
+		error.memorySlots.should.equal('Element null');
+		done();
+	});
+	
+	it('should detect element cannot be null and is not null', function (done) {
+		var computer = {
+			memorySlots: ['4GB', '4GB', '4GB', '4GB']
+		};
+
+		var error = ova(computer,  {
+			memorySlots: { _rules: { type: 'array', elementType: 'string', elementNull: false } }
+		});
+
+		should.not.exist(error);
+		done();
+	});
+});
+
+describe('Element min validation', function() {
+	it('should detect element equals minimum', function (done) {
+		var computer = {
+			memoryCapacities: [8, 4, 8, 4]
+		};
+
+		var error = ova(computer,  {
+			memoryCapacities: { _rules: { type: 'array', elementType: 'number', elementMin: 4 } }
+		});
+
+		should.not.exist(error);
+		done();
+	});
+	
+	it('should detect element above minimum', function (done) {
+		var computer = {
+			memoryCapacities: [8, 8, 8, 8]
+		};
+
+		var error = ova(computer,  {
+			memoryCapacities: { _rules: { type: 'array', elementType: 'number', elementMin: 4 } }
+		});
+
+		should.not.exist(error);
+		done();
+	});
+	
+	it('should detect element below minimum', function (done) {
+		var computer = {
+			memoryCapacities: [8, 2, 8, 8]
+		};
+
+		var error = ova(computer,  {
+			memoryCapacities: { _rules: { type: 'array', elementType: 'number', elementMin: 4 } }
+		});
+
+		error.memoryCapacities.should.equal('Element below minimum');
+		done();
+	});
+});
+
+describe('Element max validation', function() {
+	it('should detect element equals maximum', function (done) {
+		var computer = {
+			memoryCapacities: [2, 4, 2, 4]
+		};
+
+		var error = ova(computer,  {
+			memoryCapacities: { _rules: { type: 'array', elementType: 'number', elementMax: 4 } }
+		});
+
+		should.not.exist(error);
+		done();
+	});
+	
+	it('should detect element above maximum', function (done) {
+		var computer = {
+			memoryCapacities: [4, 8, 4, 4]
+		};
+
+		var error = ova(computer,  {
+			memoryCapacities: { _rules: { type: 'array', elementType: 'number', elementMax: 4 } }
+		});
+
+		error.memoryCapacities.should.equal('Element above maximum');
+		done();
+	});
+	
+	it('should detect element below maximum', function (done) {
+		var computer = {
+			memoryCapacities: [2, 2, 2, 2]
+		};
+
+		var error = ova(computer,  {
+			memoryCapacities: { _rules: { type: 'array', elementType: 'number', elementMax: 4 } }
+		});
+
+		should.not.exist(error);
+		done();
+	});
+});
+
+describe('Element min length validation', function() {
+	it('should detect element string length equals minimum length', function (done) {
+		var computer = {
+			memoryBrands: ['Corsair', 'S']
+		};
+
+		var error = ova(computer,  {
+			memoryBrands: { _rules: { type: 'array', elementType: 'string', elementMinLength: 1 } }
+		});
+
+		should.not.exist(error);
+		done();
+	});
+
+	it('should detect element string length above minimum length', function (done) {
+		var computer = {
+			memoryBrands: ['Corsair', 'Samsung']
+		};
+
+		var error = ova(computer,  {
+			memoryBrands: { _rules: { type: 'array', elementType: 'string', elementMinLength: 1 } }
+		});
+
+		should.not.exist(error);
+		done();
+	});
+
+	it('should detect element string length below minimum length', function (done) {
+		var computer = {
+			memoryBrands: ['Corsair', '']
+		};
+
+		var error = ova(computer,  {
+			memoryBrands: { _rules: { type: 'array', elementType: 'string', elementMinLength: 1 } }
+		});
+
+		error.memoryBrands.should.equal('Element below minimum length');
+		done();
+	});
+});
+
+describe('Element max length validation', function() {
+	it('should detect element string length equals maximum length', function (done) {
+		var computer = {
+			memoryBrands: ['Toshiba', 'Samsung']
+		};
+
+		var error = ova(computer,  {
+			memoryBrands: { _rules: { type: 'array', elementType: 'string', elementMaxLength: 7 } }
+		});
+
+		should.not.exist(error);
+		done();
+	});
+
+	it('should detect element string length above maximum length', function (done) {
+		var computer = {
+			memoryBrands: ['Samsung', 'Kingston']
+		};
+
+		var error = ova(computer,  {
+			memoryBrands: { _rules: { type: 'array', elementType: 'string', elementMaxLength: 7 } }
+		});
+
+		error.memoryBrands.should.equal('Element above maximum length');
+		done();
+	});
+
+	it('should detect element string length below maximum length', function (done) {
+		var computer = {
+			memoryBrands: ['Samsung', 'Corsair']
+		};
+
+		var error = ova(computer,  {
+			memoryBrands: { _rules: { type: 'array', elementType: 'string', elementMaxLength: 8 } }
+		});
+
+		should.not.exist(error);
 		done();
 	});
 });
@@ -1284,7 +1633,7 @@ describe('Regex validation', function() {
 		done();
 	});
 
-	it('should not detect non-matching regex for each non-string in array if arrayType was not specified', function (done) {
+	it('should not detect non-matching regex for each non-string in array if elementType was not specified', function (done) {
 		var actor = {
 			name: 'Gerald Butler',
 			tags: [123]
@@ -1299,7 +1648,7 @@ describe('Regex validation', function() {
 		done();
 	});
 
-	it('should detect non-matching regex for each non-string in array if arrayType was specified', function (done) {
+	it('should detect non-matching regex for each non-string in array if elementType was specified', function (done) {
 		var actor = {
 			name: 'Gerald Butler',
 			tags: [123]
@@ -1307,7 +1656,7 @@ describe('Regex validation', function() {
 
 		var error = ova(actor,  {
 			name: { _rules: { type: 'string' } },
-			tags: { _rules: { type: 'array', arrayType: 'string', regex: /^[a-z0-9]{3,}$/ } }
+			tags: { _rules: { type: 'array', elementType: 'string', regex: /^[a-z0-9]{3,}$/ } }
 		});
 
 		error.tags.should.equal('Invalid element type');

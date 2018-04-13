@@ -148,11 +148,11 @@ var validateType = function(val, ruleVal) {
 	return null;
 };
 
-var validateArrayType = function(val, ruleVal) {
+var validateElementType = function(val, ruleVal) {
 	if (val == null)
 		return null;
 
-	for (var i=0; i < val.length; i++) {
+	for (var i = 0; i < val.length; i++) {
 		var invalidElementType = validateType(val[i], ruleVal);
 
 		if (invalidElementType)
@@ -161,6 +161,82 @@ var validateArrayType = function(val, ruleVal) {
 
 	return null;
 };
+
+var validateElementNull = function(val, ruleVal) {
+	if (val == null || ruleVal == true)
+		return null;
+
+	for (var i = 0; i < val.length; i++) {
+		const element = val[i];
+		
+		if (element == null) {
+			return 'Element null';
+		}
+	}
+
+	return null;
+};
+
+var validateElementMin = function(val, ruleVal) {
+	if (val == null)
+		return null;
+
+	for (var i = 0; i < val.length; i++) {
+		const element = val[i];
+		
+		if (element < ruleVal) {
+			return 'Element below minimum';
+		}
+	}
+
+	return null;
+};
+
+var validateElementMax = function(val, ruleVal) {
+	if (val == null)
+		return null;
+
+	for (var i = 0; i < val.length; i++) {
+		const element = val[i];
+		
+		if (element > ruleVal) {
+			return 'Element above maximum';
+		}
+	}
+
+	return null;
+};
+
+var validateElementMinLength = function(val, ruleVal) {
+	if (val == null)
+		return null;
+
+	for (var i = 0; i < val.length; i++) {
+		const element = val[i];
+		
+		if (element.length < ruleVal) {
+			return 'Element below minimum length';
+		}
+	}
+
+	return null;
+};
+
+var validateElementMaxLength = function(val, ruleVal) {
+	if (val == null)
+		return null;
+
+	for (var i = 0; i < val.length; i++) {
+		const element = val[i];
+		
+		if (element.length > ruleVal) {
+			return 'Element above maximum length';
+		}
+	}
+
+	return null;
+};
+
 
 var validateEq = function(val, ruleVal) {
 	if (val == null)
@@ -203,7 +279,7 @@ var validateEnum = function(val, ruleVal) {
 		return null;
 
 	if (validateType(val, 'array') == null) {
-		for (var i=0; i < val.length; i++) {
+		for (var i = 0; i < val.length; i++) {
 			if (ruleVal.indexOf(val[i]) < 0)
 				return 'Not in enumeration';
 		}
@@ -221,7 +297,7 @@ var validateRegex = function(val, ruleVal) {
 		return null;
 
 	if (validateType(val, 'array') == null) {
-		for (var i=0; i < val.length; i++) {
+		for (var i = 0; i < val.length; i++) {
 			if (!ruleVal.test(val[i]))
 				return 'Regex mismatch';
 		}
@@ -237,12 +313,17 @@ var validators = {
 	required: validateRequired,
 	null: validateNull,
 	type: validateType,
-	arrayType: validateArrayType,
 	eq: validateEq,
 	min: validateMin,
 	max: validateMax,
 	minLength: validateMinLength,
 	maxLength: validateMaxLength,
+	elementNull: validateElementNull,
+	elementType: validateElementType,
+	elementMin: validateElementMin,
+	elementMax: validateElementMax,
+	elementMinLength: validateElementMinLength,
+	elementMaxLength: validateElementMaxLength,
 	enum: validateEnum,
 	regex: validateRegex
 };
