@@ -15,11 +15,12 @@ var validate = function recursive(object, schema) {
 	var rules = schema._rules;
 
 	if (typeof rules === 'object') {
+		// required, null, type, elementNull, elementType must be run first before other rules if they are provided
 		if (typeof rules.required === 'boolean') { // run required validator first if specified
-			var err1 = validators['required'](object, rules['required']);
+			var invalid = validators['required'](object, rules['required']);
 
-			if (err1)
-				return err1;
+			if (invalid)
+				return invalid;
 		}
 		else {
 			if (typeof object === 'undefined') // skip any validation for this object since its undefined and not required
@@ -27,14 +28,35 @@ var validate = function recursive(object, schema) {
 		}
 
 		if (typeof rules.null === 'boolean') { // run null validator second if specified
-			var err2 = validators['null'](object, rules['null']);
+			var invalid = validators['null'](object, rules['null']);
 
-			if (err2)
-				return err2;
+			if (invalid)
+				return invalid;
+		}
+		
+		if (typeof rules.type === 'string') {
+			var invalid = validators['type'](object, rules['type']);
+
+			if (invalid)
+				return invalid;
+		}
+		
+		if (typeof rules.elementNull === 'boolean') {
+			var invalid = validators['elementNull'](object, rules['elementNull']);
+
+			if (invalid)
+				return invalid;
+		}
+		
+		if (typeof rules.elementType === 'string') {
+			var invalid = validators['elementType'](object, rules['elementType']);
+
+			if (invalid)
+				return invalid;
 		}
 
 		for (var rule in rules) {
-			if (rule == 'required' || rule == 'null')
+			if (rule == 'required' || rule == 'null' || rule == 'type' || rule == 'elementNull' || rule == 'elementType')
 				continue;
 
 			var validator = validators[rule];
@@ -42,10 +64,10 @@ var validate = function recursive(object, schema) {
 			if (typeof validator === 'undefined')
 				throw new Error('validator for rule "' + rule + '" does not exist');
 
-			var err3 = validator(object, rules[rule]);
+			var invalid = validator(object, rules[rule]);
 
-			if (err3) {
-				return err3; // return the error and don't drill down any deeper
+			if (invalid) {
+				return invalid; // return the error and don't drill down any deeper
 			}
 		}
 	}
@@ -184,6 +206,10 @@ var validateElementMin = function(val, ruleVal) {
 	for (var i = 0; i < val.length; i++) {
 		const element = val[i];
 		
+		if (typeof element != 'number') {
+			continue;
+		}
+		
 		if (element < ruleVal) {
 			return 'Element below minimum';
 		}
@@ -198,6 +224,10 @@ var validateElementMax = function(val, ruleVal) {
 
 	for (var i = 0; i < val.length; i++) {
 		const element = val[i];
+		
+		if (typeof element != 'number') {
+			continue;
+		}
 		
 		if (element > ruleVal) {
 			return 'Element above maximum';
@@ -214,6 +244,10 @@ var validateElementMinLength = function(val, ruleVal) {
 	for (var i = 0; i < val.length; i++) {
 		const element = val[i];
 		
+		if (typeof element != 'string') {
+			continue;
+		}
+		
 		if (element.length < ruleVal) {
 			return 'Element below minimum length';
 		}
@@ -228,6 +262,10 @@ var validateElementMaxLength = function(val, ruleVal) {
 
 	for (var i = 0; i < val.length; i++) {
 		const element = val[i];
+		
+		if (typeof element != 'string') {
+			continue;
+		}
 		
 		if (element.length > ruleVal) {
 			return 'Element above maximum length';

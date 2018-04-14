@@ -58,18 +58,26 @@ Element min validation
  - should detect element equals minimum
  - should detect element above minimum
  - should detect element below minimum
+ - should not error if elementNull=true element is null
+ - should not error if elementNull=false element is null
 Element max validation
  - should detect element equals maximum
  - should detect element above maximum
  - should detect element below maximum
+ - should not error if elementNull=true element is null
+ - should not error if elementNull=false element is null
 Element min length validation
  - should detect element string length equals minimum length
  - should detect element string length above minimum length
  - should detect element string length below minimum length
+ - should not error if elementNull=true element is null
+ - should not error if elementNull=false element is null
 Element max length validation
  - should detect element string length equals maximum length
  - should detect element string length above maximum length
  - should detect element string length below maximum length
+ - should not error if elementNull=true element is null
+ - should not error if elementNull=false element is null
 Required validation
  - should not validate undefined property if required is absent
  - should not validate undefined property if required is false
@@ -862,6 +870,32 @@ describe('Element min validation', function() {
 		error.memoryCapacities.should.equal('Element below minimum');
 		done();
 	});
+	
+	it('should not error if elementNull=true element is null', function (done) {
+		var computer = {
+			memoryCapacities: [8, null, 2, 8]
+		};
+
+		var error = ova(computer,  {
+			memoryCapacities: { _rules: { type: 'array', elementType: 'number', elementMin: 4, elementNull: true } }
+		});
+
+		error.memoryCapacities.should.equal('Element below minimum');
+		done();
+	});
+	
+	it('should not error if elementNull=false element is null', function (done) {
+		var computer = {
+			memoryCapacities: [8, null, 8, 8]
+		};
+
+		var error = ova(computer,  {
+			memoryCapacities: { _rules: { type: 'array', elementType: 'number', elementMin: 4, elementNull: false } }
+		});
+
+		error.memoryCapacities.should.equal('Element null');
+		done();
+	});
 });
 
 describe('Element max validation', function() {
@@ -901,6 +935,32 @@ describe('Element max validation', function() {
 		});
 
 		should.not.exist(error);
+		done();
+	});
+	
+	it('should not error if elementNull=true element is null', function (done) {
+		var computer = {
+			memoryCapacities: [4, null, 8, 4]
+		};
+
+		var error = ova(computer,  {
+			memoryCapacities: { _rules: { type: 'array', elementType: 'number', elementMax: 4, elementNull: true } }
+		});
+
+		error.memoryCapacities.should.equal('Element above maximum');
+		done();
+	});
+	
+	it('should not error if elementNull=false element is null', function (done) {
+		var computer = {
+			memoryCapacities: [4, null, 8, 4]
+		};
+
+		var error = ova(computer,  {
+			memoryCapacities: { _rules: { type: 'array', elementType: 'number', elementMax: 4, elementNull: false } }
+		});
+
+		error.memoryCapacities.should.equal('Element null');
 		done();
 	});
 });
@@ -944,6 +1004,32 @@ describe('Element min length validation', function() {
 		error.memoryBrands.should.equal('Element below minimum length');
 		done();
 	});
+	
+	it('should not error if elementNull=true element is null', function (done) {
+		var computer = {
+			memoryBrands: ['Corsair', null, '']
+		};
+
+		var error = ova(computer,  {
+			memoryBrands: { _rules: { type: 'array', elementType: 'string', elementMinLength: 1, elementNull: true } }
+		});
+
+		error.memoryBrands.should.equal('Element below minimum length');
+		done();
+	});
+	
+	it('should not error if elementNull=false element is null', function (done) {
+		var computer = {
+			memoryBrands: ['Corsair', null, '']
+		};
+
+		var error = ova(computer,  {
+			memoryBrands: { _rules: { type: 'array', elementType: 'string', elementMinLength: 1, elementNull: false } }
+		});
+
+		error.memoryBrands.should.equal('Element null');
+		done();
+	});
 });
 
 describe('Element max length validation', function() {
@@ -983,6 +1069,32 @@ describe('Element max length validation', function() {
 		});
 
 		should.not.exist(error);
+		done();
+	});
+	
+	it('should not error if elementNull=true element is null', function (done) {
+		var computer = {
+			memoryBrands: ['Samsung', null, 'Kingston']
+		};
+
+		var error = ova(computer,  {
+			memoryBrands: { _rules: { type: 'array', elementType: 'string', elementMaxLength: 7, elementNull: true } }
+		});
+
+		error.memoryBrands.should.equal('Element above maximum length');
+		done();
+	});
+	
+	it('should not error if elementNull=false element is null', function (done) {
+		var computer = {
+			memoryBrands: ['Samsung', null, 'Kingston']
+		};
+
+		var error = ova(computer,  {
+			memoryBrands: { _rules: { type: 'array', elementType: 'string', elementMaxLength: 7, elementNull: false } }
+		});
+
+		error.memoryBrands.should.equal('Element null');
 		done();
 	});
 });
