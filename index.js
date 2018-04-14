@@ -311,6 +311,36 @@ var validateMaxLength = function(val, ruleVal) {
 	return (val.length > ruleVal ? 'Above maximum length' : null);
 };
 
+// Checks if array/string/object is empty
+var validateEmpty = function(val, ruleVal) {
+	if (val == null)
+		return null;
+		
+	switch (typeof val) {
+		case 'string':
+			if (!ruleVal && val.length == 0) {
+				return 'Empty string';
+			}
+			break;
+		case 'object':
+			if (!ruleVal) {
+				if (Array.isArray(val) && val.length == 0) {
+					return 'Empty array';
+				}
+				
+				if (Object.keys(val).length === 0 && val.constructor === Object) {
+					return 'Empty object';
+				}
+			}
+			break;
+		default:
+			return 'Not object, array or string'
+			break;
+	}
+	
+	return null;
+};
+
 // Support array and non-array types
 var validateEnum = function(val, ruleVal) {
 	if (val == null)
@@ -363,6 +393,7 @@ var validators = {
 	elementMinLength: validateElementMinLength,
 	elementMaxLength: validateElementMaxLength,
 	enum: validateEnum,
+	empty: validateEmpty,
 	regex: validateRegex
 };
 

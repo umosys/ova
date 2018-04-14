@@ -6,6 +6,10 @@ Ova is an Object VAlidator that is light, extensible, and schema-based. Useful f
 
 ---
 
+## What's New In 1.3.2
+
+- Added 'empty' rule to check for empty string, array, object
+
 ## What's New In 1.3.0
 
 > Breaking change: Renamed 'arrayType' rule to 'elementType' to be consistent with new rules for array elements
@@ -311,6 +315,18 @@ If property is a **single-value**, checks if it is one of the enumerated values.
 var schema = {
 	director: { _rules: { type: 'string', enum: ['Zack Snyder', 'JJ Abrams'] } },
 	cast: { _rules: { type: 'array', enum: ['Gerald Butler', 'Lena Headey', 'Michael Fassbender'] } }
+};
+```
+
+### empty
+
+Data type: *array, string, object*
+
+Checks if array, string or object is empty.
+
+```
+var schema = {
+	movies: { _rules: { type: 'array', elementType: 'string', empty: false } }
 };
 ```
 

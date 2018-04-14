@@ -123,6 +123,19 @@ enum validation
  - should detect array is subset of enum
  - should detect array is superset of enum
  - should detect array has nothing from enum
+Empty validation
+ - should detect empty string when empty=true
+ - should detect empty string when empty=false
+ - should detect non-empty string when empty=true
+ - should detect non-empty string when empty=false
+ - should detect empty array when empty=true
+ - should detect empty array when empty=false
+ - should detect non-empty array when empty=true
+ - should detect non-empty array when empty=false
+ - should detect empty object when empty=true
+ - should detect empty object when empty=false
+ - should detect non-empty object when empty=true
+ - should detect non-empty object when empty=false
 Regex validation
  - should detect matching regex
  - should detect non-matching regex
@@ -1680,6 +1693,176 @@ describe('enum validation', function() {
 		});
 
 		error.cast.should.equal('Not in enumeration');
+		done();
+	});
+});
+
+describe('Empty validation', function() {
+	it('should detect empty string when empty=true', function (done) {
+		var actor = {
+			name: ''
+		};
+
+		var error = ova(actor,  {
+			name: { _rules: { type: 'string', empty: true } }
+		});
+
+		should.not.exist(error);
+		done();
+	});
+	
+	it('should detect empty string when empty=false', function (done) {
+		var actor = {
+			name: ''
+		};
+
+		var error = ova(actor,  {
+			name: { _rules: { type: 'string', empty: false } }
+		});
+
+		error.name.should.equal('Empty string');
+		done();
+	});
+	
+	it('should detect non-empty string when empty=true', function (done) {
+		var actor = {
+			name: 'Gerald Butler'
+		};
+
+		var error = ova(actor,  {
+			name: { _rules: { type: 'string', empty: true } }
+		});
+
+		should.not.exist(error);
+		done();
+	});
+	
+	it('should detect non-empty string when empty=false', function (done) {
+		var actor = {
+			name: 'Gerald Butler'
+		};
+
+		var error = ova(actor,  {
+			name: { _rules: { type: 'string', empty: false } }
+		});
+
+		should.not.exist(error);
+		done();
+	});
+	
+	it('should detect empty array when empty=true', function (done) {
+		var actor = {
+			name: 'Gerald Butler',
+			movies: []
+		};
+
+		var error = ova(actor,  {
+			movies: { _rules: { type: 'array', elementType: 'string', empty: true } }
+		});
+
+		should.not.exist(error);
+		done();
+	});
+	
+	it('should detect empty array when empty=false', function (done) {
+		var actor = {
+			name: 'Gerald Butler',
+			movies: []
+		};
+
+		var error = ova(actor,  {
+			movies: { _rules: { type: 'array', elementType: 'string', empty: false } }
+		});
+
+		error.movies.should.equal('Empty array');
+		done();
+	});
+	
+	it('should detect non-empty array when empty=true', function (done) {
+		var actor = {
+			name: 'Gerald Butler',
+			movies: ['300', 'Law Abiding Citizen']
+		};
+
+		var error = ova(actor,  {
+			movies: { _rules: { type: 'array', elementType: 'string', empty: true } }
+		});
+
+		should.not.exist(error);
+		done();
+	});
+	
+	it('should detect non-empty array when empty=false', function (done) {
+		var actor = {
+			name: 'Gerald Butler',
+			movies: ['300', 'Law Abiding Citizen']
+		};
+
+		var error = ova(actor,  {
+			movies: { _rules: { type: 'array', elementType: 'string', empty: false } }
+		});
+
+		should.not.exist(error);
+		done();
+	});
+	
+	it('should detect empty object when empty=true', function (done) {
+		var actor = {
+			name: 'Gerald Butler',
+			sideNotes: {}
+		};
+
+		var error = ova(actor,  {
+			sideNotes: { _rules: { type: 'object', empty: true } }
+		});
+
+		should.not.exist(error);
+		done();
+	});
+	
+	it('should detect empty object when empty=false', function (done) {
+		var actor = {
+			name: 'Gerald Butler',
+			sideNotes: {}
+		};
+
+		var error = ova(actor,  {
+			sideNotes: { _rules: { type: 'object', empty: false } }
+		});
+
+		error.sideNotes.should.equal('Empty object');
+		done();
+	});
+	
+	it('should detect non-empty object when empty=true', function (done) {
+		var actor = {
+			name: 'Gerald Butler',
+			sideNotes: {
+				cool: true
+			}
+		};
+
+		var error = ova(actor,  {
+			sideNotes: { _rules: { type: 'object', empty: true } }
+		});
+
+		should.not.exist(error);
+		done();
+	});
+	
+	it('should detect non-empty object when empty=false', function (done) {
+		var actor = {
+			name: 'Gerald Butler',
+			sideNotes: {
+				cool: true
+			}
+		};
+
+		var error = ova(actor,  {
+			sideNotes: { _rules: { type: 'object', empty: false } }
+		});
+
+		should.not.exist(error);
 		done();
 	});
 });
