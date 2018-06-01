@@ -84,6 +84,8 @@ Required validation
  - should not validate defined property if required is false
  - should validate undefined property if required is true
  - should validate defined property if required is true
+ - should not validate with null=false rule for undefined property if required is false
+ - should not validate with null=true rule for undefined property if required is false
 Null validation
  - should detect value can be null and is null
  - should detect value cannot be null and is null
@@ -1193,6 +1195,40 @@ describe('Required validation', function() {
 
 		var error = ova(computer,  {
 			model: { _rules: { type: 'string', required: true } },
+			processor: { _rules: { type: 'object' } }
+		});
+
+		should.not.exist(error);
+		done();
+	});
+	
+	it('should not validate with null=false rule for undefined property if required is false', function (done) {
+		var computer = {
+			processor: {
+				name: 'Intel Core i5',
+				speed: '1.8 GHz'
+			}
+		};
+
+		var error = ova(computer,  {
+			model: { _rules: { type: 'string', required: false, null: false } },
+			processor: { _rules: { type: 'object' } }
+		});
+
+		should.not.exist(error);
+		done();
+	});
+	
+	it('should not validate with null=true rule for undefined property if required is false', function (done) {
+		var computer = {
+			processor: {
+				name: 'Intel Core i5',
+				speed: '1.8 GHz'
+			}
+		};
+
+		var error = ova(computer,  {
+			model: { _rules: { type: 'string', required: false, null: true } },
 			processor: { _rules: { type: 'object' } }
 		});
 

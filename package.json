@@ -1,6 +1,6 @@
 {
   "name": "ova",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "description": "Ova is an Object VAlidator that is light, extensible, and schema-based. Useful for Express req.body/params/query, or MongoDB document before inserting into collection if you don't want to use Mongoose.",
   "main": "index.js",
   "scripts": {

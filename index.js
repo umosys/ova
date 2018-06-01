@@ -15,16 +15,17 @@ var validate = function recursive(object, schema) {
 	var rules = schema._rules;
 
 	if (typeof rules === 'object') {
+		// not specifying required is the same specifying required is false
+		// so skip any validation for this object since its undefined and not required
+		if ((typeof rules.required === 'undefined' || rules.required === false) && typeof object === 'undefined')
+			return null;
+		
 		// required, null, type, elementNull, elementType must be run first before other rules if they are provided
 		if (typeof rules.required === 'boolean') { // run required validator first if specified
 			var invalid = validators['required'](object, rules['required']);
 
 			if (invalid)
 				return invalid;
-		}
-		else {
-			if (typeof object === 'undefined') // skip any validation for this object since its undefined and not required
-				return null;
 		}
 
 		if (typeof rules.null === 'boolean') { // run null validator second if specified
@@ -102,6 +103,9 @@ var validateRequired = function(val, ruleVal) {
 };
 
 var validateNull = function(val, ruleVal) {
+	if (typeof val == 'undefined')
+		return null;
+	
 	return (ruleVal === false && val == null ? 'Null' : null);
 };
 
