@@ -1,4 +1,3 @@
-var assert = require('assert');
 var ObjectID = null;
 
 try {
@@ -158,7 +157,9 @@ var validateType = function(val, ruleVal) {
 				return errorMsg;
 			break;
 		case 'objectIdString':
-			assert(ObjectID != null);
+			if (ObjectID == null) {
+				throw new Error('MongoDB package required. Use npm i mongodb');
+			}
 			
 			if (!ObjectID.isValid(val))
 				return errorMsg;
