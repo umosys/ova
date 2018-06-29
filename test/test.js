@@ -26,7 +26,8 @@ Type validation
  - should detect number string (integer)
  - should detect number string (decimal)
  - should detect number string (negative)
- - should detect non-number string
+ - should detect non-number string (string)
+ - should detect non-number string (boolean)
  - should detect object
  - should detect non-object
  - should detect string
@@ -496,9 +497,22 @@ describe('Type validation', function() {
 		done();
 	});
 
-	it('should detect non-number string', function (done) {
+	it('should detect non-number string (string)', function (done) {
 		var day = {
 			temp: 'five'
+		};
+
+		var error = ova(day,  {
+			temp: { _rules: { type: 'numberString' } }
+		});
+
+		error.temp.should.equal('Invalid type');
+		done();
+	});
+	
+	it('should detect non-number string (boolean)', function (done) {
+		var day = {
+			temp: true
 		};
 
 		var error = ova(day,  {

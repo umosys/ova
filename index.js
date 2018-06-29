@@ -145,7 +145,7 @@ var validateType = function(val, ruleVal) {
 				return errorMsg;
 			break;
 		case 'numberString':
-			if (isNaN(val))
+			if (!( typeof val == 'string' && !isNaN(val) ))
 				return errorMsg;
 			break;
 		case 'object':
