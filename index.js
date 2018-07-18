@@ -34,6 +34,11 @@ var validate = function recursive(object, schema) {
 				return invalid;
 		}
 		
+		// if object is allowed to be null and is null, skip all other checks
+		if (object == null) {
+			return null;
+		}
+		
 		if (typeof rules.type === 'string') {
 			var invalid = validators['type'](object, rules['type']);
 
@@ -73,24 +78,26 @@ var validate = function recursive(object, schema) {
 	}
 
 	var error = null;
-
-	for (var prop in schema) {
-		if (prop == '_rules')
-			continue;
-
-		var subobject = object[prop];
-		var subschema = schema[prop];
-
-		if (typeof subschema !== 'object')
-			throw new TypeError('non-object for property in schema');
-
-		var subErr = recursive(subobject, subschema);
-
-		if (subErr) {
-			if (error == null)
-				error = {};
-
-			error[prop] = subErr;
+	
+	if (typeof object == 'object') {
+		for (var prop in schema) {
+			if (prop == '_rules')
+				continue;
+	
+			var subobject = object[prop];
+			var subschema = schema[prop];
+	
+			if (typeof subschema !== 'object')
+				throw new TypeError('non-object for property in schema');
+	
+			var subErr = recursive(subobject, subschema);
+	
+			if (subErr) {
+				if (error == null)
+					error = {};
+	
+				error[prop] = subErr;
+			}
 		}
 	}
 

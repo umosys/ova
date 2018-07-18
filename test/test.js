@@ -7,6 +7,7 @@ Schema test
  - should throw an error for non-objects in schema
  - should be able to traverse nested schemas
  - should be able to an error in a nested schema
+ - should be able to handle null for nested schema
 Type validation
  - should detect unsupported type
  - should detect array
@@ -237,6 +238,26 @@ describe('Schema test', function() {
 
 		error.title.should.equal('Invalid type');
 		error.crew.writers.should.equal('Invalid type');
+		done();
+	});
+	
+	it('should be able to handle null for nested schema', function (done) {
+		var movie = {
+			title: 300,
+			crew: null
+		};
+
+		var error = ova(movie,  {
+			title: { _rules: { type: 'string' } },
+			crew: {
+				_rules: { type: 'object', null: true },
+				director: { _rules: { type: 'string' } },
+				writers: { _rules: { type: 'array', elementType: 'string' } }
+			}
+		});
+
+		// error.title.should.equal('Invalid type');
+		// error.crew.writers.should.equal('Invalid type');
 		done();
 	});
 });
